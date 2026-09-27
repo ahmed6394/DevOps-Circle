@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import OperationalError
 
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://cloudconnect:cloudconnect123@postgres:5432/cloudconnect")
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://devops_circle:devops_circle_dev@postgres:5432/devops_circle")
 JWT_SECRET = os.getenv("JWT_SECRET", "change-this-local-secret")
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
 JWT_EXPIRES_MINUTES = int(os.getenv("JWT_EXPIRES_MINUTES", "10080"))

@@ -8,12 +8,12 @@ import redis
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import OperationalError
 
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://cloudconnect:cloudconnect123@postgres:5432/cloudconnect")
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://devops_circle:devops_circle_dev@postgres:5432/devops_circle")
 REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")
-POST_CREATE_QUEUE = os.getenv("POST_CREATE_QUEUE", "cloudconnect:queue:post-create")
-PROCESSED_EVENTS_LIST = os.getenv("PROCESSED_EVENTS_LIST", "cloudconnect:events:processed")
-FAILED_EVENTS_LIST = os.getenv("FAILED_EVENTS_LIST", "cloudconnect:events:failed")
-ANALYTICS_CACHE_KEY = os.getenv("ANALYTICS_CACHE_KEY", "cloudconnect:analytics:metrics")
+POST_CREATE_QUEUE = os.getenv("POST_CREATE_QUEUE", "devops_circle:queue:post-create")
+PROCESSED_EVENTS_LIST = os.getenv("PROCESSED_EVENTS_LIST", "devops_circle:events:processed")
+FAILED_EVENTS_LIST = os.getenv("FAILED_EVENTS_LIST", "devops_circle:events:failed")
+ANALYTICS_CACHE_KEY = os.getenv("ANALYTICS_CACHE_KEY", "devops_circle:analytics:metrics")
 DB_INIT_LOCK_ID = int(os.getenv("DB_INIT_LOCK_ID", "987654321"))
 WORKER_METRICS_PORT = int(os.getenv("WORKER_METRICS_PORT", "9100"))
 
@@ -137,8 +137,8 @@ def process_post_create(event: dict):
 
     today = datetime.now(timezone.utc).date().isoformat()
     pipe = r.pipeline()
-    pipe.incr("cloudconnect:analytics:queued_posts_processed")
-    pipe.incr(f"cloudconnect:analytics:daily:{today}:posts")
+    pipe.incr("devops_circle:analytics:queued_posts_processed")
+    pipe.incr(f"devops_circle:analytics:daily:{today}:posts")
     pipe.delete(ANALYTICS_CACHE_KEY)
     pipe.lpush(PROCESSED_EVENTS_LIST, json.dumps({**event, "post_id": post["id"], "processed_at": datetime.now(timezone.utc).isoformat()}))
     pipe.ltrim(PROCESSED_EVENTS_LIST, 0, 99)

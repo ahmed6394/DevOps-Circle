@@ -16,7 +16,7 @@ add_cors(app)
 add_prometheus_metrics(app, "post-service")
 
 REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")
-POST_CREATE_QUEUE = os.getenv("POST_CREATE_QUEUE", "cloudconnect:queue:post-create")
+POST_CREATE_QUEUE = os.getenv("POST_CREATE_QUEUE", "devops_circle:queue:post-create")
 redis_client = redis.Redis.from_url(REDIS_URL, decode_responses=True)
 POST_CREATE_REQUESTS_TOTAL = Counter("devops_circle_post_create_requests_total", "Post creation requests accepted and queued.", ["service"])
 

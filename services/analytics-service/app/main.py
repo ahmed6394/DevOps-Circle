@@ -14,7 +14,7 @@ add_cors(app)
 add_prometheus_metrics(app, "analytics-service")
 
 REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")
-POST_CREATE_QUEUE = os.getenv("POST_CREATE_QUEUE", "cloudconnect:queue:post-create")
+POST_CREATE_QUEUE = os.getenv("POST_CREATE_QUEUE", "devops_circle:queue:post-create")
 r = redis.Redis.from_url(REDIS_URL, decode_responses=True)
 IMPRESSIONS_TRACKED_TOTAL = Counter("devops_circle_impressions_tracked_total", "Post impressions tracked by the Analytics Service.", ["service"])
 
@@ -56,7 +56,7 @@ def track_impressions(payload: ImpressionRequest, user=Depends(get_current_user)
                 inserted += 1
     try:
         if inserted:
-            r.incrby("cloudconnect:analytics:impressions_tracked", inserted)
+            r.incrby("devops_circle:analytics:impressions_tracked", inserted)
             IMPRESSIONS_TRACKED_TOTAL.labels("analytics-service").inc(inserted)
     except Exception:
         pass
@@ -111,7 +111,7 @@ def metrics(user=Depends(get_current_user)):
     processed_by_worker = 0
     try:
         queue_depth = r.llen(POST_CREATE_QUEUE)
-        processed_by_worker = int(r.get("cloudconnect:analytics:queued_posts_processed") or 0)
+        processed_by_worker = int(r.get("devops_circle:analytics:queued_posts_processed") or 0)
         redis_status = "ok"
     except Exception:
         pass
