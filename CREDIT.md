@@ -8,8 +8,14 @@ origins, and the boundary between them is deliberate and permanent.
 
 | Layer | Origin | License |
 | --- | --- | --- |
-| Application source (`services/`, `frontend/`, `docker-compose.yml`, `.env.example`, `pytest.ini`, `requirements-dev.txt`) | Third party — see below | **Undetermined.** No license file was present in the source material. |
-| DevOps platform (`terraform/`, `k8s/`, `scripts/`, `.github/`, `tests/`, `.gitignore`, `.gitattributes`, `README.md`, `CREDIT.md`) | Original work authored in this repository | To be declared once the application question below is resolved. |
+| Application source (`services/`, `frontend/`, `docker-compose.yml`, `.env.example`, `pytest.ini`, `requirements-dev.txt`) | Third party — see [below](#the-upstream-application) | **Undetermined.** No license file was present in the source material. |
+| Platform baseline (`terraform/`, `k8s/`, `scripts/`) | Instructor-provided — see [below](#the-instructor-provided-platform-baseline) | As supplied with the course materials |
+| Adaptations to the baseline, and original work (`tests/`, `.github/`, `.gitignore`, `.gitattributes`, `README.md`, `CREDIT.md`, `task_plan.md`, `progress.md`, `findings.md`) | Authored in this repository | To be declared once the application question below is resolved |
+
+Read the third row carefully: it is narrower than it may appear. The authorizations
+and fixes listed in
+[What is ours](#what-is-ours) are real work, but the underlying structure of
+every layer they adapt is the instructor's.
 
 ## The upstream application
 
@@ -75,15 +81,54 @@ Deliberately **not** taken from upstream, and written from scratch in this
 repository:
 
 ```
-terraform/           EC2 provisioning
-k8s/                 Kubernetes manifests and Kustomize overlays
-scripts/             EC2 bootstrap scripts
-.github/workflows/   CI/CD pipelines
 tests/               contract and verification tests
 ```
 
-Upstream copies of the platform layers were used as a technical reference while
-authoring. They are not present in this repository and are not in its history.
+## The instructor-provided platform baseline
+
+The platform layers are supplied by the course instructor as a working
+baseline:
+
+```
+terraform/           EC2 provisioning
+k8s/                 Kubernetes manifests and Kustomize overlays
+scripts/             EC2 bootstrap scripts
+```
+
+These are **not original work by this repository's author.** They are adapted
+here, and the adaptations are the contribution. Each adaptation is a separate
+commit so the delta is reviewable:
+
+| Adaptation | Rationale |
+| --- | --- |
+| S3 remote backend with versioning, encryption, and locking | Local state is destroyed when the instance is replaced, after which `terraform destroy` can no longer find the instance |
+| Separate `terraform/bootstrap` module for the state bucket | A backend cannot reference a bucket that does not exist yet |
+| `t3.large` instead of the baseline's smaller type | The full stack needs roughly 5.2 GB; the baseline size OOMs |
+| `chmod +x` moved inside the entry script | Git on Windows cannot record mode `100755`, so a fresh clone is not executable. As a manual README step it is a step people forget. |
+| `usermod -aG docker` instead of `newgrp docker` | `newgrp` only changes group membership inside a spawned subshell, so the current session is unaffected |
+| `set -euo pipefail` and idempotency on every script | Fail fast; re-runnable after a partial failure |
+| Healthcheck-to-probe translation | Compose `healthcheck` and `service_healthy` startup ordering have no direct equivalent in Kubernetes |
+| StatefulSet and PVC for `postgres` and `redis` | The baseline's `Deployment` cannot express the volume claim these need |
+| CI gate, security scanning, image build and publish | Not present in the baseline |
+| Image tag automation against the commit SHA | Required for traceable deployments |
+| ServiceMonitors, Loki log shipping, Grafana dashboard | Not present in the baseline |
+| CD verification job | Not present in the baseline |
+| This repository's documentation | Written here |
+
+The instructor baseline is retained outside the working tree at
+`E:\DevOps\bongoDev\_upstream-platform-ref\` while it is being adapted, so that
+it cannot enter the repository by accident.
+
+## What is ours
+
+Two things, and they should be stated precisely rather than generously:
+
+1. **The adaptations above**, each in its own commit.
+2. **Everything absent from the baseline** — the test suite, the CI pipeline,
+   the image pipeline, the observability configuration, the CD verification
+   job, and the documentation.
+
+No claim is made that the Terraform, manifests, or scripts are original.
 
 ## Modifications to the application layer
 

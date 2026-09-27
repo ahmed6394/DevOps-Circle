@@ -175,6 +175,12 @@ regardless of any contributor's local `core.autocrlf` setting.
 ## Relationship to the upstream project
 
 The application layer comes from **DevConnect Pro** by **bongoDev**, a teaching
-project with no license file. The DevOps platform in this repository is original
-work. The two are kept strictly separate, and the full boundary is documented in
-[CREDIT.md](CREDIT.md).
+project with no license file. The platform layer is an **instructor-provided
+baseline**, adapted in this repository rather than authored from nothing. What
+is genuinely original work here is narrower, and stated precisely in
+[CREDIT.md](CREDIT.md): the adaptations themselves, the test suite, the CI and
+image pipelines, the observability configuration, the CD verification job, and
+the documentation.
+
+Nothing in this repository should be read as claiming that the Terraform,
+manifests, or bootstrap scripts are original.
