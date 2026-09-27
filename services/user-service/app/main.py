@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy import text
 from .common import add_cors, engine, get_current_user, init_db
 from .metrics import add_prometheus_metrics
-app = FastAPI(title="CloudConnect User Service", version="1.0.0")
+app = FastAPI(title="DevOps Circle User Service", version="1.0.0")
 add_cors(app)
 add_prometheus_metrics(app, "user-service")
 class ProfileUpdate(BaseModel):

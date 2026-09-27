@@ -9,7 +9,7 @@ from sqlalchemy import text
 from .common import add_cors, engine, get_current_user, init_db
 from .metrics import add_prometheus_metrics
 
-app = FastAPI(title="CloudConnect Analytics Service", version="1.1.0")
+app = FastAPI(title="DevOps Circle Analytics Service", version="1.1.0")
 add_cors(app)
 add_prometheus_metrics(app, "analytics-service")
 

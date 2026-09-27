@@ -1,4 +1,4 @@
-const getToken = () => localStorage.getItem('cloudconnect_token')
+const getToken = () => localStorage.getItem('devops_circle_token')
 async function request(path, options = {}) {
   const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) }
   const token = getToken()

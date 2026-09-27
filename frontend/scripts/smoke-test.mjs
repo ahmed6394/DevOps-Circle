@@ -4,7 +4,7 @@ const main = fs.readFileSync(new URL('../src/main.jsx', import.meta.url), 'utf8'
 const api = fs.readFileSync(new URL('../src/api.js', import.meta.url), 'utf8');
 const nginx = fs.readFileSync(new URL('../nginx.conf', import.meta.url), 'utf8');
 
-const requiredUiText = ['Home', 'Architecture', 'Services', 'Security', 'Analytics', 'DevConnect'];
+const requiredUiText = ['Home', 'Architecture', 'Services', 'Security', 'Analytics', 'DevOps Circle'];
 for (const text of requiredUiText) {
   if (!main.includes(text)) {
     throw new Error(`Missing required UI text: ${text}`);

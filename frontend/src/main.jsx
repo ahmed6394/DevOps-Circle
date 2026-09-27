@@ -30,15 +30,15 @@ import { api } from './api'
 import './styles.css'
 
 function App() {
-  const [token, setToken] = useState(localStorage.getItem('cloudconnect_token'))
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem('cloudconnect_user') || 'null'))
+  const [token, setToken] = useState(localStorage.getItem('devops_circle_token'))
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('devops_circle_user') || 'null'))
   const [mode, setMode] = useState('login')
   const [page, setPage] = useState('home')
   const [error, setError] = useState('')
 
   function saveSession(data) {
-    localStorage.setItem('cloudconnect_token', data.token)
-    localStorage.setItem('cloudconnect_user', JSON.stringify(data.user))
+    localStorage.setItem('devops_circle_token', data.token)
+    localStorage.setItem('devops_circle_user', JSON.stringify(data.user))
     setToken(data.token)
     setUser(data.user)
     setError('')
@@ -46,8 +46,8 @@ function App() {
   }
 
   function logout() {
-    localStorage.removeItem('cloudconnect_token')
-    localStorage.removeItem('cloudconnect_user')
+    localStorage.removeItem('devops_circle_token')
+    localStorage.removeItem('devops_circle_user')
     setToken(null)
     setUser(null)
     setPage('home')
@@ -79,7 +79,7 @@ function Navbar({ user, logout, page, setPage, setMode }) {
   return (
     <nav className="nav">
       <button className="brand brand-button" onClick={goHome} aria-label="Go to home page">
-        <span className="logo-mark">◆◆</span><span>DevConnect</span>
+        <span className="logo-mark">◆◆</span><span>DevOps Circle</span>
       </button>
       <div className="nav-links">
         <button className={page === 'home' ? 'active' : ''} onClick={goHome}>Home</button>
@@ -116,9 +116,9 @@ function Landing({ mode, setMode, saveSession, error, setError, setPage }) {
         </div>
       </section>
       <section className="console-card">
-        <div className="console-top"><span></span><span></span><span></span><p>local.cloudconnect.dev</p></div>
+        <div className="console-top"><span></span><span></span><span></span><p>local.devops-circle.dev</p></div>
         <div className="console-body">
-          <aside><b>DevConnect</b><a>Overview</a><a>Auth API</a><a>Posts</a><a>Comments</a><a>Likes</a></aside>
+          <aside><b>DevOps Circle</b><a>Overview</a><a>Auth API</a><a>Posts</a><a>Comments</a><a>Likes</a></aside>
           <div className="console-main">
             <div className="welcome">Welcome back, DevOps Engineer</div>
             <div className="metric"><span>Running services</span><strong>10</strong><small>Frontend + 6 FastAPI + Worker + Redis + PostgreSQL</small></div>
@@ -163,13 +163,13 @@ function ArchitecturePage() {
     <main className="info-page">
       <section className="page-hero">
         <div className="pill"><Network size={14} /> Professional Social Platform Architecture</div>
-        <h1>DevConnect Production Architecture</h1>
-        <p>DevConnect is designed as a developer social platform: users create profiles, publish posts with optional public images, comment, like content, and view analytics. Locally it runs with Docker Compose and Nginx. In production it maps to Kubernetes on EC2, ArgoCD GitOps, DockerHub images, PostgreSQL, Redis Queue, and a full Prometheus/Grafana/Loki monitoring stack.</p>
+        <h1>DevOps Circle Production Architecture</h1>
+        <p>DevOps Circle is designed as a developer social platform: users create profiles, publish posts with optional public images, comment, like content, and view analytics. Locally it runs with Docker Compose and Nginx. In production it maps to Kubernetes on EC2, ArgoCD GitOps, DockerHub images, PostgreSQL, Redis Queue, and a full Prometheus/Grafana/Loki monitoring stack.</p>
       </section>
 
       <section className="architecture-board">
         <div className="diagram-title">
-          <div><span className="kicker">End-to-end flow</span><h2>Developer → GitHub Actions → DockerHub → ArgoCD → Kubernetes → DevConnect</h2></div>
+          <div><span className="kicker">End-to-end flow</span><h2>Developer → GitHub Actions → DockerHub → ArgoCD → Kubernetes → DevOps Circle</h2></div>
           <div className="diagram-badge">Docker Compose locally • Kubernetes on EC2</div>
         </div>
         <div className="architecture-diagram">
@@ -220,7 +220,7 @@ function ServicePill({ path, name }) { return <div className="service-pill"><cod
 
 function ServicesPage() {
   const services = [
-    { icon: <Container />, title: 'Frontend Social UI', cloud: 'React + Nginx / Kubernetes Service', details: 'Delivers the DevConnect social experience: landing page, feed, profile card, posts with public images, comments, likes, and analytics navigation. Nginx also acts as the local reverse proxy for API routes.' },
+    { icon: <Container />, title: 'Frontend Social UI', cloud: 'React + Nginx / Kubernetes Service', details: 'Delivers the DevOps Circle social experience: landing page, feed, profile card, posts with public images, comments, likes, and analytics navigation. Nginx also acts as the local reverse proxy for API routes.' },
     { icon: <KeyRound />, title: 'Auth Service', cloud: 'FastAPI + JWT + password hashing', details: 'Handles registration, login, JWT generation, and protected API access. In production, JWT secrets and database credentials should be provided through Kubernetes Secrets or AWS Secrets Manager.' },
     { icon: <UserRound />, title: 'User Service', cloud: 'FastAPI profile service', details: 'Owns developer profile data such as name, email, role, and bio. This turns the app from a demo feed into a developer-networking experience.' },
     { icon: <MessageCircle />, title: 'Post Service', cloud: 'FastAPI + Redis Queue producer', details: 'Accepts post creation requests, validates optional public image URLs, creates post jobs, and pushes work into Redis so multiple post requests can be handled asynchronously.' },
@@ -238,8 +238,8 @@ function ServicesPage() {
     <main className="info-page">
       <section className="page-hero">
         <div className="pill"><Container size={14} /> Real Social App Service Breakdown</div>
-        <h1>Services Behind DevConnect</h1>
-        <p>DevConnect is a developer social network built for DevOps learning. Each service owns a focused responsibility so students can understand service boundaries, Docker images, Kubernetes workloads, GitOps deployment, and observability in one professional project.</p>
+        <h1>Services Behind DevOps Circle</h1>
+        <p>DevOps Circle is a developer social network built for DevOps learning. Each service owns a focused responsibility so students can understand service boundaries, Docker images, Kubernetes workloads, GitOps deployment, and observability in one professional project.</p>
       </section>
       <section className="service-detail-grid">
         {services.map(service => <InfoCard key={service.title} icon={service.icon} title={service.title} eyebrow={service.cloud} text={service.details} />)}
@@ -259,8 +259,8 @@ function SecurityPage() {
     <main className="info-page">
       <section className="page-hero">
         <div className="pill"><Shield size={14} /> Professional Security and Delivery Controls</div>
-        <h1>Security Model for DevConnect</h1>
-        <p>DevConnect teaches security across the full delivery lifecycle: secure code checks before merge, container image scanning before publish, GitOps-controlled deployment, runtime authentication, private data services, and monitoring-driven incident visibility.</p>
+        <h1>Security Model for DevOps Circle</h1>
+        <p>DevOps Circle teaches security across the full delivery lifecycle: secure code checks before merge, container image scanning before publish, GitOps-controlled deployment, runtime authentication, private data services, and monitoring-driven incident visibility.</p>
       </section>
       <section className="security-timeline">
         <SecurityItem icon={<GitBranch />} title="Secure CI quality gates" text="Pull requests and main-branch builds run tests, Trivy filesystem scans, OWASP Dependency-Check, and SonarQube analysis before deployment is allowed." />
@@ -291,7 +291,7 @@ function AnalyticsPage() {
     <main className="info-page analytics-page">
       <section className="page-hero">
         <div className="pill"><BarChart3 size={14} /> Analytics Microservice</div>
-        <h1>DevConnect Analytics</h1>
+        <h1>DevOps Circle Analytics</h1>
         <p>This page calls a separate Analytics FastAPI service. The service reads PostgreSQL and Redis Queue data to return users, posts, comments, likes, impressions, queue depth, and worker processing metrics.</p>
         <button className="outline" onClick={loadMetrics}>Refresh Metrics</button>
       </section>
@@ -404,10 +404,10 @@ function Dashboard({ user, setUser }) {
       setPostJob(null)
     }
   }
-  async function saveProfile() { const next = await api.updateProfile({ name: user.name, bio }); localStorage.setItem('cloudconnect_user', JSON.stringify(next)); setUser(next) }
+  async function saveProfile() { const next = await api.updateProfile({ name: user.name, bio }); localStorage.setItem('devops_circle_user', JSON.stringify(next)); setUser(next) }
   async function likePost(id) { await api.togglePostLike(id); load() }
   async function deletePost(id) { await api.deletePost(id); load() }
-  return <main className="dashboard"><section className="dash-hero"><div><div className="pill"><Cloud size={14} /> Local Docker Environment</div><h1>Microservices Social Feed</h1><p>Connect with developers, share DevOps lessons, attach optional public images, and discuss ideas through comments and likes. Nginx routes the React experience to independent FastAPI services, while Redis Queue and the Worker Service process post creation asynchronously like a real cloud-native social platform.</p></div><div className="service-strip"><span>frontend</span><span>auth</span><span>user</span><span>post</span><span>worker</span><span>redis</span><span>like</span><span>comment</span><span>analytics</span><span>postgres</span></div></section>{error && <div className="error wide">{error}</div>}<div className="dash-grid"><aside className="profile-card"><div className="avatar">{user.name?.[0]?.toUpperCase()}</div><h3>{user.name}</h3><p>{user.email}</p><textarea value={bio} onChange={e => setBio(e.target.value)} placeholder="Add a short DevOps bio" /><button className="outline full" onClick={saveProfile}>Save Profile</button><div className="mini-arch"><b>Local Routing</b><span>Browser → Nginx → Post Service → Redis Queue → Worker → PostgreSQL</span></div></aside><section className="feed"><form className="composer" onSubmit={createPost}><textarea value={content} onChange={e => setContent(e.target.value)} placeholder="Share what you learned about ECS, Docker, ALB, RDS, Redis Queue, or private subnets..." disabled={creatingPost} /><input value={imageUrl} onChange={e => setImageUrl(e.target.value)} placeholder="Optional public image URL, e.g. https://images.unsplash.com/..." disabled={creatingPost} />{creatingPost && <div className="create-loader"><div className="loader-ring"><Loader2 size={26} /></div><div><b>Queuing your post through Redis...</b><span>{postJob?.status ? `Current status: ${postJob.status}` : 'Waiting for Worker Service'}</span></div></div>}<div className="composer-footer"><span>Image is optional. Create post waits 2 seconds to demonstrate async Redis Queue + Worker processing.</span><button className="primary" disabled={creatingPost}>{creatingPost ? 'Processing...' : 'Publish Post'} {!creatingPost && <ArrowRight size={15} />}</button></div></form>{posts.map(post => <PostCard key={post.id} post={post} currentUser={user} onLike={likePost} onDelete={deletePost} reloadPosts={load} />)}{!posts.length && <div className="empty">No posts yet. Create the first DevConnect post.</div>}</section></div></main>
+  return <main className="dashboard"><section className="dash-hero"><div><div className="pill"><Cloud size={14} /> Local Docker Environment</div><h1>Microservices Social Feed</h1><p>Connect with developers, share DevOps lessons, attach optional public images, and discuss ideas through comments and likes. Nginx routes the React experience to independent FastAPI services, while Redis Queue and the Worker Service process post creation asynchronously like a real cloud-native social platform.</p></div><div className="service-strip"><span>frontend</span><span>auth</span><span>user</span><span>post</span><span>worker</span><span>redis</span><span>like</span><span>comment</span><span>analytics</span><span>postgres</span></div></section>{error && <div className="error wide">{error}</div>}<div className="dash-grid"><aside className="profile-card"><div className="avatar">{user.name?.[0]?.toUpperCase()}</div><h3>{user.name}</h3><p>{user.email}</p><textarea value={bio} onChange={e => setBio(e.target.value)} placeholder="Add a short DevOps bio" /><button className="outline full" onClick={saveProfile}>Save Profile</button><div className="mini-arch"><b>Local Routing</b><span>Browser → Nginx → Post Service → Redis Queue → Worker → PostgreSQL</span></div></aside><section className="feed"><form className="composer" onSubmit={createPost}><textarea value={content} onChange={e => setContent(e.target.value)} placeholder="Share what you learned about ECS, Docker, ALB, RDS, Redis Queue, or private subnets..." disabled={creatingPost} /><input value={imageUrl} onChange={e => setImageUrl(e.target.value)} placeholder="Optional public image URL, e.g. https://images.unsplash.com/..." disabled={creatingPost} />{creatingPost && <div className="create-loader"><div className="loader-ring"><Loader2 size={26} /></div><div><b>Queuing your post through Redis...</b><span>{postJob?.status ? `Current status: ${postJob.status}` : 'Waiting for Worker Service'}</span></div></div>}<div className="composer-footer"><span>Image is optional. Create post waits 2 seconds to demonstrate async Redis Queue + Worker processing.</span><button className="primary" disabled={creatingPost}>{creatingPost ? 'Processing...' : 'Publish Post'} {!creatingPost && <ArrowRight size={15} />}</button></div></form>{posts.map(post => <PostCard key={post.id} post={post} currentUser={user} onLike={likePost} onDelete={deletePost} reloadPosts={load} />)}{!posts.length && <div className="empty">No posts yet. Create the first DevOps Circle post.</div>}</section></div></main>
 }
 
 function PublicImage({ src, alt, compact = false }) {

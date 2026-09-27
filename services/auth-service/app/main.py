@@ -5,7 +5,7 @@ from sqlalchemy import text
 from .common import add_cors, create_token, engine, get_current_user, init_db
 from .metrics import add_prometheus_metrics
 
-app = FastAPI(title="CloudConnect Auth Service", version="1.0.0")
+app = FastAPI(title="DevOps Circle Auth Service", version="1.0.0")
 add_cors(app)
 add_prometheus_metrics(app, "auth-service")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

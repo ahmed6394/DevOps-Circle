@@ -2,7 +2,7 @@ from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy import text
 from .common import add_cors, engine, get_current_user, init_db
 from .metrics import add_prometheus_metrics
-app = FastAPI(title="CloudConnect Like Service", version="1.0.0")
+app = FastAPI(title="DevOps Circle Like Service", version="1.0.0")
 add_cors(app)
 add_prometheus_metrics(app, "like-service")
 @app.on_event("startup")
