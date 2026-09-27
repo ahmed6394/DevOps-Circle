@@ -1,0 +1,98 @@
+# ---------------------------------------------------------------------------
+# Secrets and credentials
+# ---------------------------------------------------------------------------
+# .env holds real credentials for the local Compose stack. Only the template
+# (.env.example) is committed.
+.env
+.env.*
+!.env.example
+
+# Private keys. The EC2 SSH key generated for this project must never be
+# committed; the public half goes in GitHub Secrets / Terraform variables.
+*.pem
+*.key
+id_rsa
+id_ed25519
+
+# AWS and Kubernetes credentials that may be written into the working tree by
+# tooling. `terraform` writes these outside the repo by default, but be explicit.
+.aws/
+kubeconfig
+kubeconfig.yaml
+*.kubeconfig
+
+# ---------------------------------------------------------------------------
+# Python
+# ---------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+*.egg-info/
+.venv/
+venv/
+env/
+
+# ---------------------------------------------------------------------------
+# Node
+# ---------------------------------------------------------------------------
+node_modules/
+frontend/dist/
+frontend/build/
+frontend/.vite/
+npm-debug.log*
+yarn-error.log*
+.eslintcache
+
+# ---------------------------------------------------------------------------
+# Terraform
+# ---------------------------------------------------------------------------
+# NOTE: .terraform.lock.hcl is intentionally NOT ignored. It pins provider
+# versions and contains provider checksums, so committing it is the correct and
+# security-relevant practice. It is called out here because the instinct to
+# ignore everything Terraform-related is the common mistake.
+**/.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+
+# Variable files routinely contain account IDs, public IPs and key paths.
+# Commit only the examples.
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
+
+# ---------------------------------------------------------------------------
+# Local overrides and rendered output
+# ---------------------------------------------------------------------------
+# Locally patched Kubernetes manifests (image tags, resource limits) must not
+# be committed, or they silently override the GitOps source of truth.
+k8s/**/overlays/local/
+k8s/**/secrets.local.yaml
+*.rendered.yaml
+
+# ---------------------------------------------------------------------------
+# Tooling output
+# ---------------------------------------------------------------------------
+dependency-check-report/
+.venv*/
+.terraform.lock.hcl.bak
+node_modules/.cache/
+npm-debug.log
+
+# ---------------------------------------------------------------------------
+# Editors and operating systems
+# ---------------------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini

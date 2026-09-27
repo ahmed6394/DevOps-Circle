@@ -1,0 +1,35 @@
+# Normalize line endings to LF in the repository and check them out as LF on
+# every platform, including Windows.
+#
+# Why this is not optional: the bootstrap scripts in scripts/ are executed on
+# EC2 (Linux) through their shebang line. If this file is absent and a Windows
+# contributor has core.autocrlf=true, the scripts check out with CRLF endings
+# and the kernel resolves the interpreter to a path ending in \r:
+#
+#   bad interpreter: /usr/bin/env bash^M: no such file or directory
+#
+# Forcing eol=lf here makes the failure mode impossible regardless of each
+# contributor's local Git configuration.
+* text=auto eol=lf
+
+# These files are already binary. Without this, Git's text=auto heuristic can
+# corrupt them by attempting line-ending conversion.
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.webp  binary
+*.pdf   binary
+*.woff  binary
+*.woff2 binary
+
+# Shell scripts must always be LF, even if a file is somehow added with
+# core.autocrlf set after checkout. Declare it twice on purpose: once via the
+# text=auto rule above, and once explicitly for the file type that matters most.
+*.sh    text eol=lf
+
+# Kubernetes and workflow YAML are consumed by tools that are whitespace- and
+# newline-sensitive, and are never hand-edited on Windows.
+*.yml   text eol=lf
+*.yaml  text eol=lf
