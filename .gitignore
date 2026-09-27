@@ -86,6 +86,15 @@ node_modules/.cache/
 npm-debug.log
 
 # ---------------------------------------------------------------------------
+# Local planning notes
+# ---------------------------------------------------------------------------
+# Personal working documents. They track this build but are not part of the
+# project, so they stay out of the history.
+task_plan.md
+progress.md
+findings.md
+
+# ---------------------------------------------------------------------------
 # Editors and operating systems
 # ---------------------------------------------------------------------------
 .vscode/
