@@ -17,9 +17,9 @@ variable "environment" {
 }
 
 variable "instance_type" {
-  description = "EC2 instance type. t3.medium provides 2 vCPU and 4 GiB RAM, good for the base lab. Use t3.large (8 GiB) or t3.xlarge for smoother monitoring demos."
+  description = "EC2 instance type. t3.large provides 2 vCPU and 8 GiB RAM, recommended for the Grafana/Prometheus/ArgoCD stack. t3.medium (4 GiB) is the minimum for the app alone."
   type        = string
-  default     = "t3.medium"
+  default     = "t3.large"
 }
 
 variable "root_volume_size_gb" {

@@ -6,10 +6,15 @@ data "aws_vpc" "default" {
   default = true
 }
 
-data "aws_subnets" "default" {
+data "aws_subnet" "public" {
   filter {
     name   = "vpc-id"
     values = [data.aws_vpc.default.id]
+  }
+
+  filter {
+    name   = "map-public-ip-on-launch"
+    values = ["true"]
   }
 }
 
@@ -45,6 +50,12 @@ locals {
   )
 
   key_name = var.existing_key_name != "" ? var.existing_key_name : aws_key_pair.devops_circle[0].key_name
+
+  # Sort by availability zone and then subnet id so repeated plans always resolve
+  # the same subnet, instead of whichever one the API happened to return first.
+  default_subnet_id = split("/", sort([
+    for s in data.aws_subnet.public : "${s.availability_zone}/${s.id}"
+  ])[0])[1]
 }
 
 resource "aws_key_pair" "devops_circle" {
@@ -154,7 +165,7 @@ resource "aws_iam_instance_profile" "ssm" {
 resource "aws_instance" "devops_circle" {
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = var.instance_type
-  subnet_id                   = data.aws_subnets.default.ids[0]
+  subnet_id                   = local.default_subnet_id
   vpc_security_group_ids      = [aws_security_group.devops_circle.id]
   associate_public_ip_address = var.associate_public_ip
   key_name                    = local.key_name
