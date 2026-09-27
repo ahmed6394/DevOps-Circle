@@ -126,7 +126,7 @@ docker compose logs -f worker-service
 Verify Redis is accepting jobs:
 
 ```bash
-docker exec -it cloudconnect-redis redis-cli ping   # expect PONG
+docker exec -it devops-circle-redis redis-cli ping   # expect PONG
 ```
 
 ### Tests

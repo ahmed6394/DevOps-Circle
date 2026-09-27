@@ -1,27 +1,31 @@
+# Project name is pinned rather than derived from the checkout directory, so a
+# clone into a differently named folder still produces devops-circle-* resources.
+name: devops-circle
+
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: cloudconnect-postgres
+    container_name: devops-circle-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-cloudconnect}
-      POSTGRES_USER: ${POSTGRES_USER:-cloudconnect}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-cloudconnect123}
+      POSTGRES_DB: ${POSTGRES_DB:-devops_circle}
+      POSTGRES_USER: ${POSTGRES_USER:-devops_circle}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-devops_circle_dev}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-cloudconnect} -d ${POSTGRES_DB:-cloudconnect}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-devops_circle} -d ${POSTGRES_DB:-devops_circle}"]
       interval: 5s
       timeout: 5s
       retries: 20
     networks:
-      - cloudconnect-net
+      - net
 
   redis:
     image: redis:7-alpine
-    container_name: cloudconnect-redis
+    container_name: devops-circle-redis
     restart: unless-stopped
     ports:
       - "6379:6379"
@@ -34,11 +38,11 @@ services:
       timeout: 5s
       retries: 20
     networks:
-      - cloudconnect-net
+      - net
 
   auth-service:
     build: ./services/auth-service
-    container_name: cloudconnect-auth
+    container_name: devops-circle-auth
     restart: unless-stopped
     env_file: .env
     depends_on:
@@ -47,11 +51,11 @@ services:
     ports:
       - "8001:8000"
     networks:
-      - cloudconnect-net
+      - net
 
   user-service:
     build: ./services/user-service
-    container_name: cloudconnect-user
+    container_name: devops-circle-user
     restart: unless-stopped
     env_file: .env
     depends_on:
@@ -60,11 +64,11 @@ services:
     ports:
       - "8002:8000"
     networks:
-      - cloudconnect-net
+      - net
 
   post-service:
     build: ./services/post-service
-    container_name: cloudconnect-post
+    container_name: devops-circle-post
     restart: unless-stopped
     env_file: .env
     depends_on:
@@ -75,11 +79,11 @@ services:
     ports:
       - "8003:8000"
     networks:
-      - cloudconnect-net
+      - net
 
   like-service:
     build: ./services/like-service
-    container_name: cloudconnect-like
+    container_name: devops-circle-like
     restart: unless-stopped
     env_file: .env
     depends_on:
@@ -88,11 +92,11 @@ services:
     ports:
       - "8004:8000"
     networks:
-      - cloudconnect-net
+      - net
 
   comment-service:
     build: ./services/comment-service
-    container_name: cloudconnect-comment
+    container_name: devops-circle-comment
     restart: unless-stopped
     env_file: .env
     depends_on:
@@ -101,11 +105,11 @@ services:
     ports:
       - "8005:8000"
     networks:
-      - cloudconnect-net
+      - net
 
   analytics-service:
     build: ./services/analytics-service
-    container_name: cloudconnect-analytics
+    container_name: devops-circle-analytics
     restart: unless-stopped
     env_file: .env
     depends_on:
@@ -116,11 +120,11 @@ services:
     ports:
       - "8006:8000"
     networks:
-      - cloudconnect-net
+      - net
 
   worker-service:
     build: ./services/worker-service
-    container_name: cloudconnect-worker
+    container_name: devops-circle-worker
     restart: unless-stopped
     env_file: .env
     ports:
@@ -131,11 +135,11 @@ services:
       redis:
         condition: service_healthy
     networks:
-      - cloudconnect-net
+      - net
 
   frontend:
     build: ./frontend
-    container_name: cloudconnect-frontend
+    container_name: devops-circle-frontend
     restart: unless-stopped
     depends_on:
       - auth-service
@@ -148,12 +152,12 @@ services:
     ports:
       - "3000:80"
     networks:
-      - cloudconnect-net
+      - net
 
 volumes:
   postgres_data:
   redis_data:
 
 networks:
-  cloudconnect-net:
+  net:
     driver: bridge
