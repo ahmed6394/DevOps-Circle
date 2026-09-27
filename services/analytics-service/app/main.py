@@ -16,7 +16,7 @@ add_prometheus_metrics(app, "analytics-service")
 REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")
 POST_CREATE_QUEUE = os.getenv("POST_CREATE_QUEUE", "cloudconnect:queue:post-create")
 r = redis.Redis.from_url(REDIS_URL, decode_responses=True)
-IMPRESSIONS_TRACKED_TOTAL = Counter("devconnect_impressions_tracked_total", "Post impressions tracked by the Analytics Service.", ["service"])
+IMPRESSIONS_TRACKED_TOTAL = Counter("devops_circle_impressions_tracked_total", "Post impressions tracked by the Analytics Service.", ["service"])
 
 class ImpressionRequest(BaseModel):
     post_ids: list[int] = []

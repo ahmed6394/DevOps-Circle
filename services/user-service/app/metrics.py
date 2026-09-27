@@ -3,18 +3,18 @@ from fastapi import Response
 from prometheus_client import CONTENT_TYPE_LATEST, Counter, Gauge, Histogram, generate_latest
 
 REQUESTS_TOTAL = Counter(
-    "devconnect_http_requests_total",
-    "Total HTTP requests handled by DevConnect FastAPI services.",
+    "devops_circle_http_requests_total",
+    "Total HTTP requests handled by DevOps Circle FastAPI services.",
     ["service", "method", "path", "status"],
 )
 REQUEST_DURATION_SECONDS = Histogram(
-    "devconnect_http_request_duration_seconds",
-    "HTTP request duration in seconds for DevConnect FastAPI services.",
+    "devops_circle_http_request_duration_seconds",
+    "HTTP request duration in seconds for DevOps Circle FastAPI services.",
     ["service", "method", "path"],
 )
 REQUESTS_IN_PROGRESS = Gauge(
-    "devconnect_http_requests_in_progress",
-    "In-flight HTTP requests for DevConnect FastAPI services.",
+    "devops_circle_http_requests_in_progress",
+    "In-flight HTTP requests for DevOps Circle FastAPI services.",
     ["service", "method", "path"],
 )
 

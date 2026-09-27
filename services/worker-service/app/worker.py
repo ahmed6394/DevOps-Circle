@@ -18,17 +18,17 @@ DB_INIT_LOCK_ID = int(os.getenv("DB_INIT_LOCK_ID", "987654321"))
 WORKER_METRICS_PORT = int(os.getenv("WORKER_METRICS_PORT", "9100"))
 
 WORKER_JOBS_PROCESSED_TOTAL = Counter(
-    "devconnect_worker_jobs_processed_total",
+    "devops_circle_worker_jobs_processed_total",
     "Post creation jobs successfully processed by the Worker Service.",
     ["service"],
 )
 WORKER_JOBS_FAILED_TOTAL = Counter(
-    "devconnect_worker_jobs_failed_total",
+    "devops_circle_worker_jobs_failed_total",
     "Post creation jobs that failed in the Worker Service.",
     ["service"],
 )
 WORKER_QUEUE_DEPTH = Gauge(
-    "devconnect_worker_queue_depth",
+    "devops_circle_worker_queue_depth",
     "Current Redis post-create queue depth seen by the Worker Service.",
     ["queue"],
 )
