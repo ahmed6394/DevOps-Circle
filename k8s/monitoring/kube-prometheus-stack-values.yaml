@@ -1,6 +1,6 @@
 grafana:
   enabled: true
-  adminPassword: admin123
+  adminPassword: ***REMOVED***
   service:
     type: ClusterIP
   sidecar:
