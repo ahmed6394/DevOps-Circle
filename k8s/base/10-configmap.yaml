@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: devops-circle-config
+  namespace: devops-circle
+data:
+  POSTGRES_DB: devops_circle
+  POSTGRES_USER: devops_circle
+  REDIS_URL: redis://redis:6379/0
+  POST_CREATE_QUEUE: devops_circle:queue:post-create
+  JWT_ALGORITHM: HS256
+  JWT_EXPIRES_MINUTES: "10080"
+  DB_INIT_LOCK_ID: "987654321"

@@ -1,0 +1,30 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: devops-circle
+resources:
+  - ../../base
+images:
+  - name: ahmed63/devops-circle-frontend
+    newTag: latest
+  - name: ahmed63/devops-circle-auth-service
+    newTag: latest
+  - name: ahmed63/devops-circle-user-service
+    newTag: latest
+  - name: ahmed63/devops-circle-post-service
+    newTag: latest
+  - name: ahmed63/devops-circle-like-service
+    newTag: latest
+  - name: ahmed63/devops-circle-comment-service
+    newTag: latest
+  - name: ahmed63/devops-circle-analytics-service
+    newTag: latest
+  - name: ahmed63/devops-circle-worker-service
+    newTag: latest
+patches:
+  - target:
+      kind: Ingress
+      name: devops-circle-ingress
+    patch: |-
+      - op: replace
+        path: /spec/rules/0/host
+        value: devops-circle.local
