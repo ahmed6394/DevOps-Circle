@@ -310,7 +310,7 @@ jobs:
           # nginx pointing at a dead IP and returns 404 while every dashboard stays green.
           # A 401 from get_current_user proves frontend -> nginx -> auth-service answered.
           code=$(kubectl -n devops-circle exec deploy/frontend -- \
-            wget -q -S -O /dev/null http://localhost/api/auth/me 2>&1 | awk '/HTTP\//{print $2}' | tail -1)
+            wget -q -S -O /dev/null http://localhost/api/auth/me 2>&1 | awk '/^[[:space:]]*HTTP\//{print $2}' | tail -1)
           test "$code" = "401" || { echo "Expected 401 from /api/auth/me, got ${code:-no response}"; exit 1; }
           echo "    nginx routing ok"
 
