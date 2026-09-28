@@ -5,21 +5,21 @@ resources:
   - ../../base
 images:
   - name: ahmed63/devops-circle-frontend
-    newTag: dde82fcb5054402d5fc0d5c5b7baecc0558edebd
+    newTag: 64a694673eb33710afddc000064de6c03c1a0d61
   - name: ahmed63/devops-circle-auth-service
-    newTag: dde82fcb5054402d5fc0d5c5b7baecc0558edebd
+    newTag: 64a694673eb33710afddc000064de6c03c1a0d61
   - name: ahmed63/devops-circle-user-service
-    newTag: dde82fcb5054402d5fc0d5c5b7baecc0558edebd
+    newTag: 64a694673eb33710afddc000064de6c03c1a0d61
   - name: ahmed63/devops-circle-post-service
-    newTag: dde82fcb5054402d5fc0d5c5b7baecc0558edebd
+    newTag: 64a694673eb33710afddc000064de6c03c1a0d61
   - name: ahmed63/devops-circle-like-service
-    newTag: dde82fcb5054402d5fc0d5c5b7baecc0558edebd
+    newTag: 64a694673eb33710afddc000064de6c03c1a0d61
   - name: ahmed63/devops-circle-comment-service
-    newTag: dde82fcb5054402d5fc0d5c5b7baecc0558edebd
+    newTag: 64a694673eb33710afddc000064de6c03c1a0d61
   - name: ahmed63/devops-circle-analytics-service
-    newTag: dde82fcb5054402d5fc0d5c5b7baecc0558edebd
+    newTag: 64a694673eb33710afddc000064de6c03c1a0d61
   - name: ahmed63/devops-circle-worker-service
-    newTag: dde82fcb5054402d5fc0d5c5b7baecc0558edebd
+    newTag: 64a694673eb33710afddc000064de6c03c1a0d61
 patches:
   - target:
       kind: Ingress
