@@ -58,6 +58,7 @@ yarn-error.log*
 **/.terraform/
 *.tfstate
 *.tfstate.*
+*.tfplan
 crash.log
 crash.*.log
 

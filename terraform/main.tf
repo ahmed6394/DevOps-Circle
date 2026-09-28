@@ -6,7 +6,7 @@ data "aws_vpc" "default" {
   default = true
 }
 
-data "aws_subnet" "public" {
+data "aws_subnets" "public" {
   filter {
     name   = "vpc-id"
     values = [data.aws_vpc.default.id]
@@ -16,6 +16,11 @@ data "aws_subnet" "public" {
     name   = "map-public-ip-on-launch"
     values = ["true"]
   }
+}
+
+data "aws_subnet" "public_by_az" {
+  for_each = toset(data.aws_subnets.public.ids)
+  id       = each.value
 }
 
 data "aws_ami" "ubuntu" {
@@ -54,7 +59,7 @@ locals {
   # Sort by availability zone and then subnet id so repeated plans always resolve
   # the same subnet, instead of whichever one the API happened to return first.
   default_subnet_id = split("/", sort([
-    for s in data.aws_subnet.public : "${s.availability_zone}/${s.id}"
+    for s in data.aws_subnet.public_by_az : "${s.availability_zone}/${s.id}"
   ])[0])[1]
 }
 
