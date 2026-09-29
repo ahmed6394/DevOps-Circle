@@ -7,6 +7,24 @@ This folder contains values/manifests for:
 - Grafana Alloy: Kubernetes pod log collection to Loki
 - cAdvisor: container-level resource metrics
 
+## Prerequisites (single-node k3s)
+
+cAdvisor needs higher inotify limits than the Ubuntu defaults:
+
+```bash
+printf 'fs.inotify.max_user_instances=1024\nfs.inotify.max_user_watches=524288\n' \
+  | sudo tee /etc/sysctl.d/99-cadvisor.conf
+sudo sysctl --system
+```
+
+If nodes cannot pull from Docker Hub (rate limits / no egress), pre-cache the
+chart images, plus the local-path helper image used to provision PVCs:
+
+```bash
+sudo /var/lib/rancher/k3s/data/current/bin/ctr --address /run/k3s/containerd/containerd.sock \
+  -n k8s.io images pull docker.io/rancher/mirrored-library-busybox:1.37.0
+```
+
 Install with:
 
 ```bash
