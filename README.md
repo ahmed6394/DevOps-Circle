@@ -1,16 +1,11 @@
 # DevOps Circle
 
-A 10-service microservices social platform, delivered to a Kubernetes cluster
+An 8-service microservices social platform, delivered to a Kubernetes cluster
 on AWS EC2 through a CI/CD and GitOps pipeline, with metrics and logs collected
 from the application's own instrumentation.
 
-> **Status: under construction.**
->
-> This repository is being built in 23 sequential commits. The application runs
-> locally today. The platform layers — Terraform, CI, Kubernetes manifests,
-> ArgoCD, observability, and CD verification — are added in later commits and
-> are listed as planned below so that no part of this README describes
-> something that does not exist yet.
+> **Status: deployed.** The full delivery path runs end to end on a k3s cluster
+> on AWS EC2, reconciled by ArgoCD from this repository.
 >
 > The application layer is imported from a third-party teaching project and
 > carries no license from its author. **This repository is private for that
@@ -82,20 +77,95 @@ other four app services depend on PostgreSQL alone.
 
 ## Build status
 
-| Layer | Status |
-| --- | --- |
-| Application source, running under Docker Compose | Built |
-| Repository hygiene (`.gitignore`, `.gitattributes`) | Built |
-| Compose topology contract test | Built |
-| Application identifier refactor | Planned |
-| Terraform EC2 provisioning | Planned |
-| CI pipeline and security scanning | Planned |
-| Image build and publish | Planned |
-| Kubernetes manifests and Kustomize overlays | Planned |
-| EC2 bootstrap scripts | Planned |
-| ArgoCD GitOps reconciliation | Planned |
-| Application metrics and log pipeline | Planned |
-| CD verification and notifications | Planned |
+| Layer | Status | Where it lives |
+| --- | --- | --- |
+| Application source, running under Docker Compose | Built | `services/`, `frontend/`, `docker-compose.yml` |
+| Repository hygiene (`.gitignore`, `.gitattributes`) | Built | `.gitignore`, `.gitattributes` |
+| Compose topology contract test | Built | `tests/test_compose_contract.py` |
+| Application identifier refactor | Built | `tests/test_no_legacy_identifiers.py` (enforced in CI) |
+| Terraform EC2 provisioning | Built | `terraform/` |
+| CI pipeline and security scanning | Built | `.github/workflows/ci-cd.yml` (`tests`, `security`, `changes`) |
+| Image build and publish | Built | `ci-cd.yml` (`docker`) — build, Trivy scan, push to Docker Hub |
+| Kubernetes manifests and Kustomize overlays | Built | `k8s/base/`, `k8s/overlays/prod/` |
+| EC2 bootstrap scripts | Built | `scripts/01`–`06`, `scripts/run-all-ec2-bootstrap.sh` |
+| ArgoCD GitOps reconciliation | Built | `k8s/argocd/`; `devops-circle` is Synced / Healthy |
+| Application metrics and log pipeline | Built | `/prometheus` in 6 services, `k8s/base/60-servicemonitors.yaml`, `k8s/monitoring/` (Loki + Alloy) |
+| CD verification and notifications | Built | `ci-cd.yml` (`gitops`, `cd-verify`, `notify`) |
+
+The pipeline is a six-job DAG: `tests` → `security` → `changes` → `docker` →
+`gitops` → `cd-verify`, with `notify` running last regardless of outcome. Every
+job in the table above is green on `main`.
+
+## Screenshots
+
+Evidence that each layer is running, rather than only described. Captured from
+the deployed environment on AWS EC2. The screenshots are ordered along the
+delivery path rather than by feature, and are hosted externally rather than
+committed to this repository.
+
+### CI/CD — GitHub Actions
+
+The six-job pipeline on `main`, green end to end.
+
+<img src="https://i.ibb.co/kVVY5PZp/Screenshot-2026-09-29-052255.png"
+     alt="GitHub Actions run for DevOps Circle CI/CD on main, showing the tests, security, changes, docker, gitops, and cd-verify jobs all completing successfully"
+     width="900">
+
+### GitOps — ArgoCD
+
+The `devops-circle` application reconciled from `k8s/overlays/prod`. The
+revision in the `Revision` column is the same commit SHA as the CI run above,
+which is what makes the deployment traceable end to end.
+
+<img src="https://i.ibb.co/nsZY8hLV/Screenshot-2026-09-29-045054.png"
+     alt="ArgoCD application list showing devops-circle as Synced and Healthy, with the deployed revision matching the commit SHA from the CI run"
+     width="900">
+
+### Cluster state
+
+Pods, deployments, and services on the k3s cluster behind the ingress.
+
+<img src="https://i.ibb.co/pqTSqD7/Screenshot-2026-09-29-051948.png"
+     alt="kubectl output showing pods, deployments, and services in the devops-circle namespace, all Running"
+     width="900">
+
+### Metrics — Grafana
+
+Observability driven by the application rather than bolted on afterwards: the
+services export their own Prometheus metrics as they serve traffic. Queue depth
+and worker throughput are first-class because post creation is asynchronous by
+design — `post-service` enqueues to Redis and returns immediately, and
+`worker-service` drains the queue.
+
+<img src="https://i.ibb.co/5XtbFXC3/Screenshot-2026-09-29-045008.png"
+     alt="Grafana dashboard with request rate, latency, and Redis queue depth panels sourced from the services' own devops_circle Prometheus metrics"
+     width="900">
+
+### Scrape targets — Prometheus
+
+All 21 scrape targets up, including cAdvisor, which needed adjusting for k3s and
+containerd rather than Docker.
+
+<img src="https://i.ibb.co/xtzdgB8q/Screenshot-2026-09-29-045021.png"
+     alt="Prometheus targets page showing all 21 active scrape targets up, including the application ServiceMonitors and cAdvisor"
+     width="900">
+
+### Pipeline notification — SMTP
+
+The `notify` job runs last regardless of outcome and emails the result.
+
+<img src="https://i.ibb.co/HpNkf7jj/Screenshot-2026-09-29-122613.png"
+     alt="SMTP server response confirming delivery of the CI/CD pipeline completion email"
+     width="900">
+
+### The application
+
+Eight containers behind the Nginx gateway: a React frontend, six FastAPI
+services, and an asynchronous worker, on PostgreSQL and Redis.
+
+<img src="https://i.ibb.co/FbwFPVqy/Screenshot-2026-09-29-044630.png"
+     alt="DevOps Circle home UI served through the Nginx gateway on the EC2 public IP"
+     width="900">
 
 ## Running it locally
 
@@ -146,13 +216,13 @@ npm run build
 ## Repository layout
 
 ```
-services/          8 FastAPI microservices
+services/          7 FastAPI microservices (6 HTTP + 1 queue worker)
 frontend/          React UI and its Nginx configuration
-tests/             contract and verification tests
-terraform/         EC2 provisioning                    (planned)
-k8s/               Kubernetes manifests, Kustomize     (planned)
-scripts/           EC2 bootstrap scripts               (planned)
-.github/workflows/ CI/CD pipelines                     (planned)
+tests/             contract, structure, and observability tests
+terraform/         EC2 provisioning
+k8s/               Kubernetes manifests, Kustomize overlays, ArgoCD, monitoring
+scripts/           EC2 bootstrap scripts
+.github/workflows/ CI/CD pipeline
 ```
 
 The platform layers are written in dependency order: a layer that reads files
