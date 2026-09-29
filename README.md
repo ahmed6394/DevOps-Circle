@@ -6,7 +6,7 @@ from the application's own instrumentation.
 
 > **Status: deployed.** The full delivery path runs end to end on a k3s cluster
 > on AWS EC2, reconciled by ArgoCD from this repository.
->
+
 ---
 
 ## What this project is
