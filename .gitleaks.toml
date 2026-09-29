@@ -1,0 +1,5 @@
+[extend]
+
+[allowlist]
+  description = "Sealed Secrets encrypted payloads are ciphertext, not secrets"
+  paths = ['''11-sealed-secret\.yaml$''']

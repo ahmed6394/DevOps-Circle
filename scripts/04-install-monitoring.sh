@@ -12,6 +12,7 @@ helm repo update
 
 helm upgrade --install kube-prometheus-stack prometheus-community/kube-prometheus-stack \
   --namespace monitoring \
+  ${GRAFANA_PASSWORD:+--set grafana.adminPassword="$GRAFANA_PASSWORD"} \
   -f k8s/monitoring/kube-prometheus-stack-values.yaml
 
 helm upgrade --install loki grafana/loki \
@@ -26,4 +27,4 @@ kubectl apply -f k8s/monitoring/cadvisor-daemonset.yaml
 
 printf '\nMonitoring installed. Grafana port-forward:\n'
 printf 'kubectl -n monitoring port-forward svc/kube-prometheus-stack-grafana 3001:80\n'
-printf 'Login: admin / admin123\n'
+printf 'Login: admin / \$GRAFANA_PASSWORD (from env, e.g. .env)\n'
