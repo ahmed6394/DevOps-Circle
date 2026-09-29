@@ -56,7 +56,7 @@ ArgoCD ── reconciles desired state from Git ──►  k3s on EC2
 
 | Service | Port | Role | Depends on |
 | --- | ---: | --- | --- |
-| `frontend` | 3000 | React UI served by Nginx (no backend config) | all app services |
+| `frontend` | 3000 | React UI plus an Nginx reverse proxy that routes `/api/*` to the services | all app services |
 | `auth-service` | 8001 | Register, login, JWT | postgres |
 | `user-service` | 8002 | Profiles and user data | postgres |
 | `post-service` | 8003 | Accepts posts, enqueues to Redis | postgres, redis |
@@ -69,6 +69,36 @@ ArgoCD ── reconciles desired state from Git ──►  k3s on EC2
 
 Only `post-service`, `analytics-service`, and `worker-service` use Redis. The
 other four app services depend on PostgreSQL alone.
+
+### Request path
+
+Two proxies sit in front of the application, and they do different jobs:
+
+```
+Internet
+  └─ Traefik  (Ingress, host devops-circle.local)
+       └─ frontend:80  →  Nginx inside the frontend pod
+            ├─ /api/auth/      → auth-service:8001
+            ├─ /api/user/      → user-service:8002
+            ├─ /api/post/      → post-service:8003
+            ├─ /api/like/      → like-service:8004
+            ├─ /api/comment/   → comment-service:8005
+            ├─ /api/analytics/ → analytics-service:8006
+            └─ /              → index.html (SPA fallback)
+```
+
+The Ingress has a single rule, `/` → `frontend:80`. All path-based routing
+happens in the Nginx configuration inside the frontend pod, which mirrors the
+ALB path-routing model from the course material. Traefik handles only host and
+entrypoint selection above it.
+
+Traefik and the ServiceLB it depends on are **not defined in this repository**.
+Both ship enabled by default with k3s and run in the `kube-system` namespace;
+`scripts/02-install-k3s.sh` installs k3s without `--disable traefik`, and no
+manifest here installs a controller. On a cluster where those defaults are off
+— EKS, or k3s with Traefik disabled — the Ingress would carry no controller and
+routing would fail silently, so the controller is an implicit dependency of
+this deployment rather than a component of it.
 
 ## Build status
 
@@ -155,11 +185,11 @@ The `notify` job runs last regardless of outcome and emails the result.
 
 ### The application
 
-Eight containers behind the Nginx gateway: a React frontend, six FastAPI
+Eight containers behind the Traefik Ingress: a React frontend, six FastAPI
 services, and an asynchronous worker, on PostgreSQL and Redis.
 
 <img src="https://i.ibb.co/FbwFPVqy/Screenshot-2026-09-29-044630.png"
-     alt="DevOps Circle home UI served through the Nginx gateway on the EC2 public IP"
+     alt="DevOps Circle home UI served through the Traefik Ingress on the EC2 public IP"
      width="900">
 
 ## Running it locally
@@ -177,9 +207,11 @@ docker compose up --build -d
 The UI is then at <http://localhost:3000>.
 
 `.env` is required — the seven backend services load it via `env_file` and
-Compose will not start them without it. `frontend` is the exception: it serves
-static assets through Nginx and holds no backend configuration. `postgres` and
-`redis` read from `environment:` defaults and start regardless.
+Compose will not start them without it. `frontend` is the exception: it reads
+no environment variables, because its Nginx configuration hardcodes the
+upstream hosts. It still depends on all seven services, since the route table
+points at them. `postgres` and `redis` read from `environment:` defaults and
+start regardless.
 
 Check the stack:
 
