@@ -24,6 +24,7 @@ helm upgrade --install alloy grafana/alloy \
   -f k8s/monitoring/alloy-values.yaml 
 
 kubectl apply -f k8s/monitoring/cadvisor-daemonset.yaml
+kubectl apply -f k8s/monitoring/loki-overview-dashboard.yaml
 
 printf '\nMonitoring installed. Grafana port-forward:\n'
 printf 'kubectl -n monitoring port-forward svc/kube-prometheus-stack-grafana 3001:80\n'
