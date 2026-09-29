@@ -35,7 +35,7 @@ spec:
       containers:
         - name: post-service
           image: ahmed63/devops-circle-post-service:latest
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000
               name: http

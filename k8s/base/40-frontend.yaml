@@ -35,7 +35,7 @@ spec:
       containers:
         - name: frontend
           image: ahmed63/devops-circle-frontend:latest
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
               name: http

@@ -35,7 +35,7 @@ spec:
       containers:
         - name: worker-service
           image: ahmed63/devops-circle-worker-service:latest
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 9100
               name: metrics

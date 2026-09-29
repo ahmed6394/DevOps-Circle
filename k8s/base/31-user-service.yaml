@@ -35,7 +35,7 @@ spec:
       containers:
         - name: user-service
           image: ahmed63/devops-circle-user-service:latest
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000
               name: http

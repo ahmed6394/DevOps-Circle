@@ -110,11 +110,38 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
+  changes:
+    name: Detect Changed Paths
+    runs-on: ubuntu-latest
+    outputs:
+      app: ${{ steps.filter.outputs.app }}
+      infra: ${{ steps.filter.outputs.infra }}
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Classify changed paths
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          base: ${{ github.event.before || github.event.pull_request.base.sha }}
+          filters: |
+            app:
+              - 'services/**'
+              - 'frontend/**'
+            infra:
+              - '.github/**'
+              - 'k8s/**'
+              - 'scripts/**'
+              - 'terraform/**'
+
   docker:
     name: Build, Scan, and Push Docker Images
     runs-on: ubuntu-latest
-    needs: security
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [security, changes]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.changes.outputs.app == 'true'
     strategy:
       fail-fast: false
       matrix:
@@ -184,8 +211,8 @@ jobs:
   gitops:
     name: Update GitOps Manifests
     runs-on: ubuntu-latest
-    needs: docker
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [docker, changes]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.changes.outputs.app == 'true'
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
@@ -211,8 +238,8 @@ jobs:
   cd-verify:
     name: Verify ArgoCD Runtime Deployment
     runs-on: ubuntu-latest
-    needs: gitops
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [gitops, changes]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && (needs.gitops.result == 'success' || needs.gitops.result == 'skipped')
     env:
       EC2_HOST: ${{ secrets.EC2_HOST }}
       EC2_USER: ${{ secrets.EC2_USER }}
