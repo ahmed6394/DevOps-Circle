@@ -8,9 +8,9 @@ origins, and the boundary between them is deliberate and permanent.
 
 | Layer | Origin | License |
 | --- | --- | --- |
-| Application source (`services/`, `frontend/`, `docker-compose.yml`, `.env.example`, `pytest.ini`, `requirements-dev.txt`) | Third party — see [below](#the-upstream-application) | **Undetermined.** No license file was present in the source material. |
+| Application source (`services/`, `frontend/`, `docker-compose.yml`, `.env.example`, `pytest.ini`, `requirements-dev.txt`) | Course material from bongoDev — see [below](#the-upstream-application) | **Instructor-provided.** No license file was present in the source material. |
 | Platform baseline (`terraform/`, `k8s/`, `scripts/`) | Instructor-provided — see [below](#the-instructor-provided-platform-baseline) | As supplied with the course materials |
-| Adaptations to the baseline, and original work (`tests/`, `.github/`, `.gitignore`, `.gitattributes`, `README.md`, `CREDIT.md`, `task_plan.md`, `progress.md`, `findings.md`) | Authored in this repository | To be declared once the application question below is resolved |
+| Adaptations to the baseline, and original work (`tests/`, `.github/`, `.gitignore`, `.gitattributes`, `README.md`, `CREDIT.md`, `task_plan.md`, `progress.md`, `findings.md`) | Authored in this repository | Not declared. Default copyright applies to the original work here. |
 
 Read the third row carefully: it is narrower than it may appear. The authorizations
 and fixes listed in
@@ -41,41 +41,54 @@ Every GitHub reference inside the upstream files is a placeholder —
 the README. The upstream tree therefore does not identify its own origin, and
 no email address, copyright line, or author URL appears in any file.
 
-This field is left deliberately unfilled rather than guessed. **The repository
-owner must fill it in** from wherever the material was originally obtained, so
-that a future reader can trace the provenance of the application layer.
+This field is left unfilled rather than guessed. The material reached this
+repository through the course rather than a public URL, and the upstream files
+do not record their own origin, so there is no public provenance link to cite.
 
-## Redistribution status
+## Provenance and publication
 
-Because the upstream material carries no license, the default position under
-copyright is **exclusive rights reserved**. A project published without an
-express grant grants no permission to copy, modify, or redistribute it.
+Both layers in this repository were provided by the course instructor as
+assignment material. The application source is **DevConnect Pro** by bongoDev,
+and the platform baseline — Terraform, Kubernetes manifests, and bootstrap
+scripts — arrived with the same course materials. Neither is third-party content
+picked up elsewhere: the upstream author and the instructor are the same party,
+which is the fact that makes publication a question of course policy rather than
+of permission.
 
-Consequently this repository is being developed as a **private repository**, and
-that is a licensing decision, not a preference. Two paths forward:
+The upstream tree carries no `LICENSE` file, so it states no redistribution
+terms. That absence is recorded here for accuracy, but it does not block
+submission: the material was supplied in order to be adapted and submitted, and
+the upstream project presents itself as a teaching lab that closes with a "What
+students should submit" checklist.
 
-1. **Obtain written permission** from the upstream author, recording the grant
-   here, then publish. This is the intended path.
-2. **Replace the application layer** with an independently written or
-   permissively licensed application, keeping the DevOps platform. The platform
-   is the substance of this project and is not affected either way.
+This repository is therefore **public**, which is the expected form of
+submission for the assignment. The application layer stays credited to bongoDev
+and is identified as course material in both this file and the README.
 
-If permission is refused, path 2 is taken before anything is made public. The
-platform work in commits 2 onward does not need to be redone — only the app
-source under `services/` and `frontend/` and the Compose topology are affected.
+No license or submission terms have been published by the instructor for this
+course material, and none are asserted here. If bongoDev later issues terms,
+they should replace this section.
 
 ## What was taken, and what was written
 
 Deliberately taken from upstream, unmodified:
 
 ```
-services/            8 FastAPI microservices
-frontend/            React UI served by Nginx
-docker-compose.yml   10-service local topology
+services/            7 FastAPI microservices (6 HTTP + 1 async queue worker)
+frontend/            React UI served by Nginx; 8 application workloads in total
+docker-compose.yml   10-service local topology (the 8 above + postgres + redis)
 .env.example         environment contract
 pytest.ini           test configuration
 requirements-dev.txt pinned test dependencies
 ```
+
+PostgreSQL and Redis are backing services rather than microservices. They are
+third-party data infrastructure rather than business logic written for this
+project, and the cluster reflects that: all 8 application workloads run as
+`Deployment` objects, while PostgreSQL and Redis run as `StatefulSet` objects
+with persistent volume claims. Counting the two layers separately is what keeps
+the 8 and the 10 from looking like a contradiction — they are different
+denominators, and both are correct for what they measure.
 
 Deliberately **not** taken from upstream, and written from scratch in this
 repository:

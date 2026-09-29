@@ -7,10 +7,10 @@ from the application's own instrumentation.
 > **Status: deployed.** The full delivery path runs end to end on a k3s cluster
 > on AWS EC2, reconciled by ArgoCD from this repository.
 >
-> The application layer is imported from a third-party teaching project and
-> carries no license from its author. **This repository is private for that
-> reason.** See [CREDIT.md](CREDIT.md) for full attribution and the
-> redistribution path.
+> This is a student assignment. The application layer and the platform baseline are
+> course material from **bongoDev**, provided to be adapted and submitted. See
+> [CREDIT.md](CREDIT.md) for attribution and for exactly which parts are
+> original work.
 
 ---
 
@@ -242,15 +242,15 @@ shebang line, and a CRLF line ending would break them with
 `bad interpreter: /usr/bin/env bash^M`. The file forces LF in the repository
 regardless of any contributor's local `core.autocrlf` setting.
 
-## Relationship to the upstream project
+## Relationship to the course material
 
-The application layer comes from **DevConnect Pro** by **bongoDev**, a teaching
-project with no license file. The platform layer is an **instructor-provided
-baseline**, adapted in this repository rather than authored from nothing. What
-is genuinely original work here is narrower, and stated precisely in
+The application layer is **DevConnect Pro** by **bongoDev**, supplied to me as
+course material for this assignment. The platform layer — Terraform, Kubernetes
+manifests, and bootstrap scripts — is an **instructor-provided baseline**,
+adapted in this repository rather than authored from nothing.
+
+What is genuinely original work here is narrower, and stated precisely in
 [CREDIT.md](CREDIT.md): the adaptations themselves, the test suite, the CI and
 image pipelines, the observability configuration, the CD verification job, and
-the documentation.
-
-Nothing in this repository should be read as claiming that the Terraform,
-manifests, or bootstrap scripts are original.
+the documentation. Nothing in this repository should be read as claiming that
+the Terraform, manifests, or bootstrap scripts are original.
