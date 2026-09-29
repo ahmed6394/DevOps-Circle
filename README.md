@@ -7,11 +7,6 @@ from the application's own instrumentation.
 > **Status: deployed.** The full delivery path runs end to end on a k3s cluster
 > on AWS EC2, reconciled by ArgoCD from this repository.
 >
-> This is a student assignment. The application layer and the platform baseline are
-> course material from **bongoDev**, provided to be adapted and submitted. See
-> [CREDIT.md](CREDIT.md) for attribution and for exactly which parts are
-> original work.
-
 ---
 
 ## What this project is
