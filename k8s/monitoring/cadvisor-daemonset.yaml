@@ -42,7 +42,7 @@ spec:
           image: gcr.io/cadvisor/cadvisor:v0.49.1
           args:
             - --housekeeping_interval=30s
-            - --docker_only=false
+            - --containerd=/run/k3s/containerd/containerd.sock
             - --store_container_labels=false
           securityContext:
             privileged: true
@@ -52,9 +52,6 @@ spec:
           volumeMounts:
             - name: rootfs
               mountPath: /rootfs
-              readOnly: true
-            - name: var-run
-              mountPath: /var/run
               readOnly: true
             - name: sys
               mountPath: /sys
@@ -68,6 +65,8 @@ spec:
             - name: run-containerd
               mountPath: /run/containerd
               readOnly: true
+            - name: containerd-sock
+              mountPath: /run/k3s/containerd/containerd.sock
             - name: dev-disk
               mountPath: /dev/disk
               readOnly: true
@@ -75,10 +74,6 @@ spec:
         - name: rootfs
           hostPath:
             path: /
-            type: Directory
-        - name: var-run
-          hostPath:
-            path: /var/run
             type: Directory
         - name: sys
           hostPath:
@@ -96,6 +91,10 @@ spec:
           hostPath:
             path: /run/containerd
             type: DirectoryOrCreate
+        - name: containerd-sock
+          hostPath:
+            path: /run/k3s/containerd/containerd.sock
+            type: Socket
         - name: dev-disk
           hostPath:
             path: /dev/disk

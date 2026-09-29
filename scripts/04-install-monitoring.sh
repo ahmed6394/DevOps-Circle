@@ -27,4 +27,4 @@ kubectl apply -f k8s/monitoring/cadvisor-daemonset.yaml
 
 printf '\nMonitoring installed. Grafana port-forward:\n'
 printf 'kubectl -n monitoring port-forward svc/kube-prometheus-stack-grafana 3001:80\n'
-printf 'Login: admin / \$GRAFANA_PASSWORD (from env, e.g. .env)\n'
+printf 'Login: admin / $GRAFANA_PASSWORD (from env, e.g. .env)\n'
